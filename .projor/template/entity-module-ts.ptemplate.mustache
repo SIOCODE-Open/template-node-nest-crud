@@ -1,0 +1,30 @@
+{
+    "forEach": "entities",
+    "filename": "src/{{kebabCase name}}/{{kebabCase name}}.module.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { {{pascalCase name}}Entity } from './{{kebabCase name}}.entity';
+import { {{pascalCase name}}Controller } from './{{kebabCase name}}.controller';
+import { {{pascalCase name}}Service } from './{{kebabCase name}}.service';
+
+{{#each associations}}
+import { {{pascalCase type.name}}Entity as {{pascalCase name}}{{pascalCase type.name}}Entity } from '../{{kebabCase type.name}}/{{kebabCase type.name}}.entity';
+{{/each}}
+
+@Module({
+    imports: [
+        TypeOrmModule.forFeature([
+            {{pascalCase name}}Entity,
+            {{#each associations}}
+            {{pascalCase name}}{{pascalCase type.name}}Entity,
+            {{/each}}
+        ]),
+    ],
+    providers: [ {{pascalCase name}}Service ],
+    controllers: [ {{pascalCase name}}Controller ],
+})
+export class {{pascalCase name}}Module {}

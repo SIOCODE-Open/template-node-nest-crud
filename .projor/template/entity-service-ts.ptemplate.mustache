@@ -1,0 +1,194 @@
+{
+    "forEach": "entities",
+    "filename": "src/{{kebabCase name}}/{{kebabCase name}}.service.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { {{pascalCase name}}Entity } from './{{kebabCase name}}.entity';
+
+{{#each associations}}
+import { {{pascalCase type.name}}Entity as {{pascalCase name}}{{pascalCase type.name}}Entity } from '../{{kebabCase type.name}}/{{kebabCase type.name}}.entity';
+{{/each}}
+
+/** {{{description}}} */
+export interface I{{pascalCase name}} {
+    id: string;
+    {{#each attributes}}
+    /** {{{description}}} */
+    {{camelCase name}}: {{{type.ts}}};
+    {{/each}}
+    {{#each associations}}
+    /** {{{description}}} */
+    {{camelCase name}}: string;
+    {{/each}}
+}
+
+/** Create DTO for {{capitalCase name}} entities */
+export interface INew{{pascalCase name}} {
+    {{#each attributes}}
+    /** {{{description}}} */
+    {{camelCase name}}: {{{type.ts}}};
+    {{/each}}
+    {{#each associations}}
+    /** {{{description}}} */
+    {{camelCase name}}: string;
+    {{/each}}
+}
+
+// TODO: List
+// TODO: Create
+// TODO: Update per attr
+// TODO: Clear per attr
+// TODO: Update per assoc
+// TODO: Clear per assoc
+
+@Injectable()
+export class {{pascalCase name}}Service {
+    constructor(
+        @InjectRepository({{pascalCase name}}Entity)
+        private {{camelCase name}}Repository: Repository<{{pascalCase name}}Entity>,
+        {{#each associations}}
+        @InjectRepository({{pascalCase name}}{{pascalCase type.name}}Entity)
+        private {{camelCase name}}{{pascalCase type.name}}Repository: Repository<{{pascalCase name}}{{pascalCase type.name}}Entity>,
+        {{/each}}
+    ) {}
+
+
+    async listAll(): Promise<I{{pascalCase name}}[]> {
+        const entities = await this.{{camelCase name}}Repository.find();
+        return entities.map(
+            entity => ({
+                id: entity.id,
+                {{#each attributes}}
+                {{camelCase name}}: entity.{{camelCase name}},
+                {{/each}}
+                {{#each associations}}
+                {{camelCase name}}: entity.{{camelCase name}}.id,
+                {{/each}}
+            })
+        )
+    }
+
+    async getById(id: string): Promise<I{{pascalCase name}} | null> {
+        const entity = await this.{{camelCase name}}Repository.findOneBy({id});
+        if (!entity) {
+            return null;
+        }
+        return {
+            id: entity.id,
+            {{#each attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+
+    async create(newEntity: INew{{pascalCase name}}): Promise<I{{pascalCase name}}> {
+        const entity = {
+            id: `${Date.now()}-${Math.random()}`,
+            {{#each attributes}}
+            {{camelCase name}}: newEntity.{{camelCase name}},
+            {{/each}}
+            {{#each associations}}
+            {{camelCase name}}: await this.{{camelCase name}}{{pascalCase type.name}}Repository.findOneBy({ id: newEntity.{{camelCase name}} }),
+            {{/each}}
+        };
+        await this.{{camelCase name}}Repository.save(entity);
+        return {
+            id: entity.id,
+            {{#each attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+
+    {{#each attributes}}
+    async update{{pascalCase name}}(id: string, {{camelCase name}}: {{{type.ts}}}): Promise<I{{pascalCase ../name}}> {
+        const entity = await this.{{camelCase ../name}}Repository.findOneBy({ id });
+        if (!entity) {
+            throw new Error(`No entity found with id ${id}`);
+        }
+        entity.{{camelCase name}} = {{camelCase name}};
+        await this.{{camelCase ../name}}Repository.save(entity);
+        return {
+            id: entity.id,
+            {{#each ../attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each ../associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+
+    async clear{{pascalCase name}}(id: string): Promise<I{{pascalCase ../name}}> {
+        const entity = await this.{{camelCase ../name}}Repository.findOneBy({ id });
+        if (!entity) {
+            throw new Error(`No entity found with id ${id}`);
+        }
+        entity.{{camelCase name}} = null;
+        await this.{{camelCase ../name}}Repository.save(entity);
+        return {
+            id: entity.id,
+            {{#each ../attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each ../associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+    {{/each}}
+
+    {{#each associations}}
+    async update{{pascalCase name}}(id: string, {{camelCase name}}Id: string): Promise<I{{pascalCase ../name}}> {
+        const entity = await this.{{camelCase ../name}}Repository.findOneBy({ id });
+        if (!entity) {
+            throw new Error(`No entity found with id ${id}`);
+        }
+        entity.{{camelCase name}} = await this.{{camelCase name}}{{pascalCase type.name}}Repository.findOneBy({ id: {{camelCase name}}Id });
+        await this.{{camelCase ../name}}Repository.save(entity);
+        return {
+            id: entity.id,
+            {{#each ../attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each ../associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+
+    async clear{{pascalCase name}}(id: string): Promise<I{{pascalCase ../name}}> {
+        const entity = await this.{{camelCase ../name}}Repository.findOneBy({ id });
+        if (!entity) {
+            throw new Error(`No entity found with id ${id}`);
+        }
+        entity.{{camelCase name}} = null;
+        await this.{{camelCase ../name}}Repository.save(entity);
+        return {
+            id: entity.id,
+            {{#each ../attributes}}
+            {{camelCase name}}: entity.{{camelCase name}},
+            {{/each}}
+            {{#each ../associations}}
+            {{camelCase name}}: entity.{{camelCase name}}.id,
+            {{/each}}
+        };
+    }
+    {{/each}}
+
+    async deleteById(id: string): Promise<void> {
+        await this.{{camelCase name}}Repository.delete({ id });
+    }
+    
+}

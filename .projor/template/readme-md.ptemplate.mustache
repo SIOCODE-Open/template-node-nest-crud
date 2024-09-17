@@ -1,0 +1,383 @@
+{
+    "map": {
+        "entities": "entities",
+        "basic": "basic"
+    },
+    "filename": "README.md"
+}
+---
+# {{capitalCase $.name}}
+
+This is a template for a [Nest.js](https://docs.nestjs.com/)-based CRUD service. You can customize this template by editing the [`.projor/.entities` file](.projor/.entities), and using [ProJor](https://projor.io) to generate the code.
+
+[Learn more about this template in the `.projor/README.md`](.projor/README.md).
+
+
+## Configuration
+
+You can change the configuration of the generated backend with the following environment variables:
+
+* `{{constantCase $.name}}_DB_HOST`: The hostname of the database. Defaults to `localhost`.
+* `{{constantCase $.name}}_DB_PORT`: The port of the database. Defaults to `5432`.
+* `{{constantCase $.name}}_DB_USERNAME`: The username to connect to the database. Defaults to `{{snakeCase $.name}}_user`.
+* `{{constantCase $.name}}_DB_PASSWORD`: The password to connect to the database. Defaults to `{{snakeCase $.name}}_password`.
+* `{{constantCase $.name}}_DB_NAME`: The name of the database. Defaults to `{{snakeCase $.name}}`.
+* `PORT`: The port the service listens on. Defaults to `3000`.
+
+## Running
+
+You can also build & run the generated service with Docker Compose (requires [Docker](https://www.docker.com/get-started)):
+
+```bash
+docker compose up --build
+```
+
+You can build and run the generated service with the following commands. This requires [Node.JS](https://nodejs.org/en/) and [Nest.js CLI](https://docs.nestjs.com/first-steps).
+
+```
+npm install
+npm run start:dev
+```
+
+You can build the Docker container of the generated service with the following command (requires [Docker](https://www.docker.com/get-started)):
+
+```bash
+docker build -t {{kebabCase $.scope}}/{{kebabCase $.name}}:latest .
+```
+
+## API
+
+_Authentication_: The generated API request _no authentication_, and allows _any request_ to be made.
+
+{{#each entities}}
+### `GET /{{kebabCase ../$.name}}/v1/{{kebabCase name}}`
+
+Lists all {{capitalCase name}} entities.
+
+_Response_
+
+```json
+[
+    {
+        "id": "string",
+        {{#each attributes}}
+        "{{camelCase name}}": {{{type.jsonExample}}},
+        {{/each}}
+        {{#each associations}}
+        "{{camelCase name}}Id": "string",
+        {{/each}}
+    },
+]
+```
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  /** @type {Array<{id: string, {{#each attributes}}{{camelCase name}}: {{type.jsDocType}}, {{/each}}{{#each associations}}{{camelCase name}}Id: string, {{/each}} }>} */
+  const response = await fetch('http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}');
+  ```
+
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X GET http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}
+  ```
+
+</details>
+
+### `GET /{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}`
+
+Gets a {{capitalCase name}} entity by ID.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase name}} entity.
+
+_Response_
+
+```json
+{
+    "id": "string",
+    {{#each attributes}}
+    "{{camelCase name}}": {{{type.jsonExample}}},
+    {{/each}}
+    {{#each associations}}
+    "{{camelCase name}}Id": "string",
+    {{/each}}
+}
+```
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  /** @type { {id: string, {{#each attributes}}{{camelCase name}}: {{type.jsDocType}}, {{/each}}{{#each associations}}{{camelCase name}}Id: string, {{/each}} } } */
+  const response = await fetch('http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}');
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X GET http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}
+  ```
+</details>
+
+### `POST /{{kebabCase ../$.name}}/v1/{{kebabCase name}}`
+
+Creates a new {{capitalCase name}} entity.
+
+_Request Body_
+
+```json
+{
+    {{#each attributes}}
+    "{{camelCase name}}": {{{type.jsonExample}}},
+    {{/each}}
+    {{#each associations}}
+    "{{camelCase name}}Id": "string",
+    {{/each}}
+}
+```
+
+_Response_
+
+```json
+{
+    "id": "string",
+    {{#each attributes}}
+    "{{camelCase name}}": {{{type.jsonExample}}},
+    {{/each}}
+    {{#each associations}}
+    "{{camelCase name}}Id": "string",
+    {{/each}}
+}
+```
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  /** @type { {id: string, {{#each attributes}}{{camelCase name}}: {{type.jsDocType}}, {{/each}}{{#each associations}}{{camelCase name}}Id: string, {{/each}} } } */
+  const response = await fetch('http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        {{#each attributes}}
+        "{{camelCase name}}": {{{type.jsonExample}}},
+        {{/each}}
+        {{#each associations}}
+        "{{camelCase name}}Id": "string",
+        {{/each}}
+    }),
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X POST -H "Content-Type: application/json" -d '{
+    {{#each attributes}}
+    "{{camelCase name}}": {{{type.jsonExample}}},
+    {{/each}}
+    {{#each associations}}
+    "{{camelCase name}}Id": "string",
+    {{/each}}
+  }' http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}
+  ```
+</details>
+
+### `DELETE /{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}`
+
+Deletes a {{capitalCase name}} entity by ID.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase name}} entity.
+
+_Response_
+
+_204 No Content_
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  await fetch('http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}', {
+    method: 'DELETE',
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X DELETE http://localhost:3000/{{kebabCase ../$.name}}/v1/{{kebabCase name}}/{id}
+  ```
+</details>
+
+{{#each attributes}}
+
+### `POST /{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}`
+
+Updates the `{{camelCase name}}` attribute of a {{capitalCase ../name}} entity.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase ../name}} entity.
+
+_Request Body_
+
+```json
+{{{type.jsonExample}}}
+```
+
+_Response_
+
+_204 No Content_
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  await fetch('http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({{{type.jsonExample}}}),
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X POST -H "Content-Type: application/json" -d '{{{type.jsonExample}}}' http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}
+  ```
+</details>
+
+### `DELETE /{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}`
+
+Clears the `{{camelCase name}}` attribute of a {{capitalCase ../name}} entity, setting it to `null`.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase ../name}} entity.
+
+_Response_
+
+_204 No Content_
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  await fetch('http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}', {
+    method: 'DELETE',
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X DELETE http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}
+  ```
+</details>
+
+{{/each}}
+
+{{#each associations}}
+
+### `POST /{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}`
+
+Updates the `{{camelCase name}}` association of a {{capitalCase ../name}} entity.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase ../name}} entity.
+
+_Request Body_
+
+```json
+"string (id of the associated entity)"
+```
+
+_Response_
+
+_204 No Content_
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  await fetch('http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify("string (id of the associated entity)"),
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X POST -H "Content-Type: application/json" -d '"string (id of the associated entity)"' http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}
+  ```
+</details>
+
+### `DELETE /{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}`
+
+Clears the `{{camelCase name}}` association of a {{capitalCase ../name}} entity, setting it to `null`.
+
+_Path Parameters_
+
+- `id` (string): The ID of the {{capitalCase ../name}} entity.
+
+_Response_
+
+_204 No Content_
+
+<details>
+  <summary>JS + fetch</summary>
+  
+  ```js
+  await fetch('http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}', {
+    method: 'DELETE',
+  });
+  ```
+</details>
+
+<details>
+  <summary>curl</summary>
+  
+  ```bash
+  curl -X DELETE http://localhost:3000/{{kebabCase ../../$.name}}/v1/{{kebabCase ../name}}/{id}/{{kebabCase name}}
+  ```
+</details>
+
+{{/each}}
+
+{{/each}}
+
+## License
+
+This template is licensed under the [MIT License](LICENSE.md).
+
+[ProJor](https://projor.io) is licensed under either the [ProJor Free License](https://license.projor.io) or the [ProJor Commercial License](https://license.projor.io).

@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            - BACKEND_DB_HOST=db
+            - BACKEND_DB_PORT=5432
+            - BACKEND_DB_USER=backend
+            - BACKEND_DB_PASSWORD=backend
+            - BACKEND_DB_NAME=backend
+        depends_on:
+            - db
+        networks:
+            - backend-network
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=backend
+            - POSTGRES_USER=backend
+            - POSTGRES_PASSWORD=backend
+        networks:
+            - backend-network
+        volumes:
+            - backend-data:/var/lib/postgresql/data
+networks:
+    backend-network: {}
+volumes:
+    backend-data: {}

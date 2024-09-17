@@ -1,0 +1,19 @@
+// A product in the system
+entity Product {
+    // The name of the product
+    String name
+    // The description of the product, supports Markdown
+    String description
+    // The manufacturer of the product
+    @Join Manufacturer manufacturer
+}
+
+// A manufacturer of products
+entity Manufacturer {
+    // The name of the manufacturer
+    String name
+    // The description of the manufacturer, supports Markdown
+    String description
+    // The URL of the manufacturer's website
+    String website
+}

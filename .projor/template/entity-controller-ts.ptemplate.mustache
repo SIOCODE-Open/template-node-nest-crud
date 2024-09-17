@@ -1,0 +1,78 @@
+{
+    "forEach": "entities",
+    "filename": "src/{{kebabCase name}}/{{kebabCase name}}.controller.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Controller, Get, Req, Post, Delete, Body, Query, Param } from "@nestjs/common";
+import { 
+    {{pascalCase name}}Service,
+    INew{{pascalCase name}},
+    I{{pascalCase name}}
+} from "./{{kebabCase name}}.service";
+
+@Controller('{{kebabCase $.name}}/v1/{{kebabCase name}}')
+export class {{pascalCase name}}Controller {
+    constructor(private readonly {{camelCase name}}Service: {{pascalCase name}}Service) {}
+
+    @Get()
+    async getAll() {
+        return await this.{{camelCase name}}Service.listAll();
+    }
+
+    @Post()
+    async create(
+        @Body() new{{pascalCase name}}: INew{{pascalCase name}}
+    ) {
+        return await this.{{camelCase name}}Service.create(new{{pascalCase name}});
+    }
+
+    @Get(':id')
+    async getOne(
+        @Param('id') id: string
+    ) {
+        return await this.{{camelCase name}}Service.getById(id);
+    }
+
+    @Delete(':id')
+    async remove(
+        @Param('id') id: string
+    ) {
+        return await this.{{camelCase name}}Service.deleteById(id);
+    }
+    
+    {{#each attributes}}
+    @Post(':id/{{kebabCase name}}')
+    async update{{pascalCase name}}(
+        @Param('id') id: string,
+        @Body() {{camelCase name}}: {{{type.ts}}}
+    ) {
+        return await this.{{camelCase ../name}}Service.update{{pascalCase name}}(id, {{camelCase name}});
+    }
+
+    @Delete(':id/{{kebabCase name}}')
+    async clear{{pascalCase name}}(
+        @Param('id') id: string
+    ) {
+        return await this.{{camelCase ../name}}Service.clear{{pascalCase name}}(id);
+    }
+    {{/each}}
+    
+    {{#each associations}}
+    @Post(':id/{{kebabCase name}}')
+    async update{{pascalCase name}}(
+        @Param('id') id: string,
+        @Body() {{camelCase name}}Id: string
+    ) {
+        return await this.{{camelCase ../name}}Service.update{{pascalCase name}}(id, {{camelCase name}}Id);
+    }
+
+    @Delete(':id/{{kebabCase name}}')
+    async clear{{pascalCase name}}(
+        @Param('id') id: string
+    ) {
+        return await this.{{camelCase ../name}}Service.clear{{pascalCase name}}(id);
+    }
+    {{/each}}
+    
+}

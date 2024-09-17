@@ -1,0 +1,40 @@
+{
+    "forEach": "entities",
+    "filename": "src/{{kebabCase name}}/{{kebabCase name}}.entity.ts",
+    "formatUsing": "typescript"
+}
+---
+import {
+    Entity,
+    Column,
+    PrimaryColumn,
+    ManyToOne,
+    OneToMany,
+} from 'typeorm';
+
+{{#each associations}}
+import { {{pascalCase type.name}}Entity as {{pascalCase name}}{{pascalCase type.name}}Entity } from '../{{kebabCase type.name}}/{{kebabCase type.name}}.entity';
+{{/each}}
+
+/** {{{description}}} */
+@Entity()
+export class {{pascalCase name}}Entity {
+
+    /** The unique identifier for the entity */
+    @PrimaryColumn()
+    id: string;
+
+    {{#each attributes}}
+    /** {{{description}}} */
+    @Column({ type: '{{{type.sql}}}' })
+    {{camelCase name}}: {{{type.ts}}};
+
+    {{/each}}
+
+    {{#each associations}}
+    /** {{{description}}} */
+    @ManyToOne(() => {{pascalCase name}}{{pascalCase type.name}}Entity)
+    {{camelCase name}}: {{pascalCase name}}{{pascalCase type.name}}Entity;
+    {{/each}}
+
+}

@@ -1,0 +1,37 @@
+{
+    "map": {},
+    "filename": "docker-compose.yaml"
+}
+---
+version: '3.8'
+services:
+    {{kebabCase $.name}}:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            - {{constantCase $.name}}_DB_HOST=db
+            - {{constantCase $.name}}_DB_PORT=5432
+            - {{constantCase $.name}}_DB_USER={{snakeCase $.name}}
+            - {{constantCase $.name}}_DB_PASSWORD={{snakeCase $.name}}
+            - {{constantCase $.name}}_DB_NAME={{snakeCase $.name}}
+        depends_on:
+            - db
+        networks:
+            - {{kebabCase $.name}}-network
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB={{snakeCase $.name}}
+            - POSTGRES_USER={{snakeCase $.name}}
+            - POSTGRES_PASSWORD={{snakeCase $.name}}
+        networks:
+            - {{kebabCase $.name}}-network
+        volumes:
+            - {{snakeCase $.name}}-data:/var/lib/postgresql/data
+networks:
+    {{kebabCase $.name}}-network: {}
+volumes:
+    {{snakeCase $.name}}-data: {}

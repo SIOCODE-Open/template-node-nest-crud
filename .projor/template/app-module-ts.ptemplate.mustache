@@ -1,0 +1,43 @@
+{
+    "map": {
+        "entities": "entities"
+    },
+    "filename": "src/app.module.ts",
+    "formatUsing": "typescript"
+}
+---
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+{{#each entities}}
+import { {{pascalCase name}}Entity } from './{{kebabCase name}}/{{kebabCase name}}.entity';
+import { {{pascalCase name}}Module } from './{{kebabCase name}}/{{kebabCase name}}.module';
+{{/each}}
+
+@Module({
+    imports: [
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: process.env.{{constantCase $.name}}_DB_HOST || 'localhost',
+            port: parseInt(process.env.{{constantCase $.name}}_DB_PORT || '5432', 10),
+            username: process.env.{{constantCase $.name}}_DB_USER || 'postgres',
+            password: process.env.{{constantCase $.name}}_DB_PASSWORD || 'postgres',
+            database: process.env.{{constantCase $.name}}_DB_NAME || '{{snakeCase $.name}}',
+            entities: [
+                {{#each entities}}
+                {{pascalCase name}}Entity,
+                {{/each}}
+            ],
+            synchronize: true,
+        }),
+        {{#each entities}}
+        {{pascalCase name}}Module,
+        {{/each}}
+    ],
+    controllers: [],
+    providers: [
+    ],
+})
+export class AppModule {}
